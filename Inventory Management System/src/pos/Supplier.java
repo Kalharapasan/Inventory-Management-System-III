@@ -1,9 +1,9 @@
 package pos;
 
- class Customers extends javax.swing.JPanel {
+ class Supplier extends javax.swing.JPanel {
 
     
-    public Customers() {
+    public Supplier() {
         initComponents();
     }
 
