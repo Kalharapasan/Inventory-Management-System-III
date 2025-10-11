@@ -1,9 +1,9 @@
 package pos;
 
- class Employee extends javax.swing.JPanel {
+ class Product extends javax.swing.JPanel {
 
     
-    public Employee() {
+    public Product() {
         initComponents();
     }
 
@@ -110,7 +110,7 @@ package pos;
         jLabel3.setText("Search ID:");
 
         jLabel4.setFont(new java.awt.Font("Segoe UI", 1, 18)); // NOI18N
-        jLabel4.setText("Employee  Infomation");
+        jLabel4.setText("Customer Infomation");
 
         javax.swing.GroupLayout jPanel3Layout = new javax.swing.GroupLayout(jPanel3);
         jPanel3.setLayout(jPanel3Layout);
@@ -168,7 +168,7 @@ package pos;
                 {null, null, null}
             },
             new String [] {
-                "ID", "Employee  Name", "T.P Number"
+                "ID", "Customer Name", "T.P Number"
             }
         ));
         jScrollPane1.setViewportView(jTable1);
