@@ -1,11 +1,42 @@
 package pos;
 
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
+import java.util.Vector;
+import javax.swing.JOptionPane;
+import javax.swing.table.DefaultTableModel;
+
  class Supplier extends javax.swing.JPanel {
 
     
     public Supplier() {
         initComponents();
+        tb_load();
     }
+    
+    public void tb_load(){
+        try {
+
+            DefaultTableModel dataTable = (DefaultTableModel) supplierTable.getModel();
+            dataTable.setRowCount(0);
+
+            Statement statement = DB.mycon().createStatement();
+            ResultSet rs = statement.executeQuery("SELECT * FROM supplier");
+
+            while (rs.next()) {
+                Vector v = new Vector();
+                v.add(rs.getString(1)); 
+                v.add(rs.getString(2)); 
+                v.add(rs.getString(3)); 
+                dataTable.addRow(v);
+            }
+
+        } catch (SQLException e) {
+            System.out.println(e);
+        }
+  
+    } 
 
     
     @SuppressWarnings("unchecked")
@@ -44,18 +75,38 @@ package pos;
         supplierAddButton.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
         supplierAddButton.setIcon(new javax.swing.ImageIcon(getClass().getResource("/pos/img/save.png"))); // NOI18N
         supplierAddButton.setText("Save");
+        supplierAddButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                supplierAddButtonActionPerformed(evt);
+            }
+        });
 
         supplierSearchButton.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
         supplierSearchButton.setIcon(new javax.swing.ImageIcon(getClass().getResource("/pos/img/search x30.png"))); // NOI18N
         supplierSearchButton.setText("Search");
+        supplierSearchButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                supplierSearchButtonActionPerformed(evt);
+            }
+        });
 
         supplierUpdateButton.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
         supplierUpdateButton.setIcon(new javax.swing.ImageIcon(getClass().getResource("/pos/img/update.png"))); // NOI18N
         supplierUpdateButton.setText("Update");
+        supplierUpdateButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                supplierUpdateButtonActionPerformed(evt);
+            }
+        });
 
         supplierDeleteButton.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
         supplierDeleteButton.setIcon(new javax.swing.ImageIcon(getClass().getResource("/pos/img/delete.png"))); // NOI18N
         supplierDeleteButton.setText("Delete");
+        supplierDeleteButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                supplierDeleteButtonActionPerformed(evt);
+            }
+        });
 
         javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
         jPanel2.setLayout(jPanel2Layout);
@@ -171,6 +222,11 @@ package pos;
                 "ID", "Supplier Name", "T.P Number"
             }
         ));
+        supplierTable.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                supplierTableMouseClicked(evt);
+            }
+        });
         jScrollPane1.setViewportView(supplierTable);
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
@@ -193,6 +249,104 @@ package pos;
                 .addGap(0, 12, Short.MAX_VALUE))
         );
     }// </editor-fold>//GEN-END:initComponents
+
+    private void supplierAddButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_supplierAddButtonActionPerformed
+        String Name = supplierNameText.getText();
+        String TNumber = supplierTPText.getText();
+        
+        try {
+            if (Name.isEmpty() || TNumber.isEmpty()) {
+                JOptionPane.showMessageDialog(this, "Enter Supplier Name and Telephone Number");
+                return; 
+            }
+            Statement statement = DB.mycon().createStatement();
+            statement.executeUpdate("INSERT INTO supplier (supplier_Name, Tp_Number) VALUES('" + Name + "','" + TNumber + "')");
+
+            JOptionPane.showMessageDialog(this, "Supplier Added Successfully");
+
+            tb_load();
+
+        } catch (SQLException e) {
+            System.err.println(e);
+            JOptionPane.showMessageDialog(this, "Error adding customer");
+        }
+    }//GEN-LAST:event_supplierAddButtonActionPerformed
+
+    private void supplierTableMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_supplierTableMouseClicked
+         int r = supplierTable.getSelectedRow();
+
+        String id = supplierTable.getValueAt(r, 0).toString();
+        String name = supplierTable.getValueAt(r, 1).toString();
+        String tp = supplierTable.getValueAt(r, 2).toString();
+     
+
+        supplierSearchText.setText(id);
+        supplierNameText.setText(name);
+        supplierTPText.setText(tp);
+    }//GEN-LAST:event_supplierTableMouseClicked
+
+    private void supplierSearchButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_supplierSearchButtonActionPerformed
+        String search = supplierSearchText.getText();
+        try {
+            Statement s = DB.mycon().createStatement();
+            ResultSet rs = s.executeQuery(" SELECT * FROM supplier WHERE sid = '"+search+"'");
+            if (!search.isEmpty()){
+                if (rs.next()) {
+                    supplierNameText.setText(rs.getString("supplier_Name"));
+                    supplierTPText.setText(rs.getString("Tp_Number"));
+                    JOptionPane.showMessageDialog(null, "Supplier Was Found");
+               
+                }else{
+                    JOptionPane.showMessageDialog(null, "No Avilabel Supplier In Databse");
+                    supplierNameText.setText("");
+                    supplierTPText.setText("");
+                }
+            }else{
+                JOptionPane.showMessageDialog(null, "Enter Supplier ID");
+            }
+        } catch (SQLException e) {
+            System.out.println(e);
+            
+        } 
+    }//GEN-LAST:event_supplierSearchButtonActionPerformed
+
+    private void supplierUpdateButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_supplierUpdateButtonActionPerformed
+        String name = supplierNameText.getText();
+        String tp = supplierTPText.getText();
+        String id = supplierSearchText.getText();
+        try {
+            if (id.isEmpty()) {
+                JOptionPane.showMessageDialog(this, "Enter Supplier Name and Telephone Number");
+                return; 
+            }else{
+                Statement s = DB.mycon().createStatement();
+                s.executeUpdate(" UPDATE supplier SET supplier_Name ='"+name+"' ,Tp_Number ='"+tp+"' WHERE sid = '"+id+"' ");
+                JOptionPane.showMessageDialog(null, "Data Updated");
+            }  
+        } catch (Exception e) {
+            System.out.println(e);
+        }
+        
+         tb_load();
+    }//GEN-LAST:event_supplierUpdateButtonActionPerformed
+
+    private void supplierDeleteButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_supplierDeleteButtonActionPerformed
+        String id = supplierSearchText.getText();
+        try {
+            if(id.isEmpty()){
+                JOptionPane.showMessageDialog(null, "Enter Supplier ID");
+            }else{
+                Statement s = DB.mycon().createStatement();
+                s.executeUpdate("DELETE FROM supplier WHERE sid = '"+id+"'");
+                JOptionPane.showMessageDialog(null, "Data Deleted");
+            }
+            
+        } catch (SQLException e) {
+            System.out.println(e);
+        }
+        
+         tb_load();
+    }//GEN-LAST:event_supplierDeleteButtonActionPerformed
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables

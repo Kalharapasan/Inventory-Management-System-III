@@ -295,11 +295,8 @@ import pos.DB;
     private void custermerSearchButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_custermerSearchButtonActionPerformed
         String search = custermerSearchText.getText();
         try {
-            
             Statement s = DB.mycon().createStatement();
-            
             ResultSet rs = s.executeQuery(" SELECT * FROM customer WHERE cid = '"+search+"'");
-            
             if (!search.isEmpty()){
                 if (rs.next()) {
                     custermerNameText.setText(rs.getString("customer_name"));
@@ -310,19 +307,15 @@ import pos.DB;
                     JOptionPane.showMessageDialog(null, "No Avilabel Custemer In Databse");
                     custermerSearchText.setText("");
                     custermerNameText.setText("");
-                    custermerTPText.setText("");
                 }
             }else{
                 JOptionPane.showMessageDialog(null, "Enter Custemer ID");
             }
-            
-            
-            
-            
         } catch (SQLException e) {
             System.out.println(e);
             
-        }
+        }       
+            
     }//GEN-LAST:event_custermerSearchButtonActionPerformed
 
     private void custemerUpdateButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_custemerUpdateButtonActionPerformed
