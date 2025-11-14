@@ -91,6 +91,11 @@ import pos.DB;
         custermerSearchButton.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
         custermerSearchButton.setIcon(new javax.swing.ImageIcon(getClass().getResource("/pos/img/search x30.png"))); // NOI18N
         custermerSearchButton.setText("Search");
+        custermerSearchButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                custermerSearchButtonActionPerformed(evt);
+            }
+        });
 
         custemerUpdateButton.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
         custemerUpdateButton.setIcon(new javax.swing.ImageIcon(getClass().getResource("/pos/img/update.png"))); // NOI18N
@@ -269,6 +274,32 @@ import pos.DB;
         custermerNameText.setText(name);
         custermerTPText.setText(tp);
     }//GEN-LAST:event_customerTableMouseClicked
+
+    private void custermerSearchButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_custermerSearchButtonActionPerformed
+        String search = custermerSearchText.getText();
+        try {
+            
+            Statement s = DB.mycon().createStatement();
+            
+            ResultSet rs = s.executeQuery(" SELECT * FROM customer WHERE cid = '"+search+"'");
+            
+            if (rs.next()) {
+                
+               custermerNameText.setText(rs.getString("customer_name"));
+               custermerTPText.setText(rs.getString("Tp_Number"));
+               
+            }else{
+                custermerSearchText.setText("");
+                custermerNameText.setText("");
+                custermerTPText.setText("");
+            }
+            
+            
+        } catch (SQLException e) {
+            System.out.println(e);
+            
+        }
+    }//GEN-LAST:event_custermerSearchButtonActionPerformed
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
