@@ -8,6 +8,7 @@ public class Home extends javax.swing.JFrame {
     public Home() {
         initComponents();
         this.setExtendedState(Home.MAXIMIZED_BOTH);
+        
     }
 
    
@@ -194,7 +195,6 @@ public class Home extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void jToggleButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jToggleButton1ActionPerformed
-        //Customer Loder 
         Customers customer = new Customers();
         jpLoder.jPanelLoader(panel_loder, customer);
     }//GEN-LAST:event_jToggleButton1ActionPerformed
