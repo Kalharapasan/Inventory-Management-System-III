@@ -15,6 +15,7 @@ import pos.DB;
     public Customers() {
         initComponents();
         tb_load();
+        
     }
     
     public void tb_load(){
@@ -33,10 +34,7 @@ import pos.DB;
                 v.add(rs.getString(1)); // ID
                 v.add(rs.getString(2)); // Name
                 v.add(rs.getString(3)); // TP
-                v.add(rs.getString(4)); // Address
-                v.add(rs.getString(5)); // Type
-                v.add(rs.getString(6)); // Contact person
-                v.add(rs.getString(7)); // Mobile
+             
 
                 dataTable.addRow(v);
             }
@@ -265,10 +263,7 @@ import pos.DB;
         String id = customerTable.getValueAt(r, 0).toString();
         String name = customerTable.getValueAt(r, 1).toString();
         String tp = customerTable.getValueAt(r, 2).toString();
-        String ad = customerTable.getValueAt(r, 3).toString();
-        String ty = customerTable.getValueAt(r, 4).toString();
-        String cp = customerTable.getValueAt(r, 5).toString();
-        String cpm = customerTable.getValueAt(r, 6).toString();
+     
 
         custermerSearchText.setText(id);
         custermerNameText.setText(name);
