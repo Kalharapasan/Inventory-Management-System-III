@@ -109,6 +109,11 @@ import pos.DB;
         custemerDeleteButton.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
         custemerDeleteButton.setIcon(new javax.swing.ImageIcon(getClass().getResource("/pos/img/delete.png"))); // NOI18N
         custemerDeleteButton.setText("Delete");
+        custemerDeleteButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                custemerDeleteButtonActionPerformed(evt);
+            }
+        });
 
         javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
         jPanel2.setLayout(jPanel2Layout);
@@ -257,21 +262,21 @@ import pos.DB;
         String cTNumber = custermerTPText.getText();
         
         try {
-        if (cName.isEmpty() || cTNumber.isEmpty()) {
-            JOptionPane.showMessageDialog(this, "Enter Customer Name and Telephone Number");
-            return; 
+            if (cName.isEmpty() || cTNumber.isEmpty()) {
+                JOptionPane.showMessageDialog(this, "Enter Customer Name and Telephone Number");
+                return; 
+            }
+            Statement statement = DB.mycon().createStatement();
+            statement.executeUpdate("INSERT INTO customer (customer_name, Tp_Number) VALUES('" + cName + "','" + cTNumber + "')");
+
+            JOptionPane.showMessageDialog(this, "Customer Added Successfully");
+
+            tb_load();
+
+        } catch (SQLException e) {
+            System.err.println(e);
+            JOptionPane.showMessageDialog(this, "Error adding customer");
         }
-        Statement statement = DB.mycon().createStatement();
-        statement.executeUpdate("INSERT INTO customer (customer_name, Tp_Number) VALUES('" + cName + "','" + cTNumber + "')");
-
-        JOptionPane.showMessageDialog(this, "Customer Added Successfully");
-
-        tb_load();
-
-    } catch (SQLException e) {
-        System.err.println(e);
-        JOptionPane.showMessageDialog(this, "Error adding customer");
-    }
     }//GEN-LAST:event_customerAddButtonActionPerformed
 
     private void customerTableMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_customerTableMouseClicked
@@ -324,21 +329,39 @@ import pos.DB;
         String name = custermerNameText.getText();
         String tp = custermerTPText.getText();
         String id = custermerSearchText.getText();
-        
-        
         try {
-            
-            Statement s = DB.mycon().createStatement();
-            s.executeUpdate(" UPDATE customer SET customer_name ='"+name+"' ,Tp_Number ='"+tp+"' WHERE cid = '"+id+"' ");
-             JOptionPane.showMessageDialog(null, "Data Updated");
-            
-            
+            if (id.isEmpty()) {
+                JOptionPane.showMessageDialog(this, "Enter Customer Name and Telephone Number");
+                return; 
+            }else{
+                Statement s = DB.mycon().createStatement();
+                s.executeUpdate(" UPDATE customer SET customer_name ='"+name+"' ,Tp_Number ='"+tp+"' WHERE cid = '"+id+"' ");
+                JOptionPane.showMessageDialog(null, "Data Updated");
+            }  
         } catch (Exception e) {
             System.out.println(e);
         }
         
          tb_load();
     }//GEN-LAST:event_custemerUpdateButtonActionPerformed
+
+    private void custemerDeleteButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_custemerDeleteButtonActionPerformed
+        String id = custermerSearchText.getText();
+        try {
+            if(id.isEmpty()){
+                JOptionPane.showMessageDialog(null, "Enter Custemer ID");
+            }else{
+                Statement s = DB.mycon().createStatement();
+                s.executeUpdate("DELETE FROM customer WHERE cid = '"+id+"'");
+                JOptionPane.showMessageDialog(null, "Data Deleted");
+            }
+            
+        } catch (SQLException e) {
+            System.out.println(e);
+        }
+        
+         tb_load();
+    }//GEN-LAST:event_custemerDeleteButtonActionPerformed
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
