@@ -100,6 +100,11 @@ import pos.DB;
         custemerUpdateButton.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
         custemerUpdateButton.setIcon(new javax.swing.ImageIcon(getClass().getResource("/pos/img/update.png"))); // NOI18N
         custemerUpdateButton.setText("Update");
+        custemerUpdateButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                custemerUpdateButtonActionPerformed(evt);
+            }
+        });
 
         custemerDeleteButton.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
         custemerDeleteButton.setIcon(new javax.swing.ImageIcon(getClass().getResource("/pos/img/delete.png"))); // NOI18N
@@ -250,16 +255,23 @@ import pos.DB;
     private void customerAddButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_customerAddButtonActionPerformed
         String cName = custermerNameText.getText();
         String cTNumber = custermerTPText.getText();
-
+        
         try {
-            Statement statement = DB.mycon().createStatement();
-            statement.executeUpdate("INSERT INTO customer (`customer_name`, `Tp_Number`) VALUES('" + cName + "','" + cTNumber + "')");
-
-            tb_load();  
-
-        } catch (SQLException e) {
-            System.err.println(e);
+        if (cName.isEmpty() || cTNumber.isEmpty()) {
+            JOptionPane.showMessageDialog(this, "Enter Customer Name and Telephone Number");
+            return; 
         }
+        Statement statement = DB.mycon().createStatement();
+        statement.executeUpdate("INSERT INTO customer (customer_name, Tp_Number) VALUES('" + cName + "','" + cTNumber + "')");
+
+        JOptionPane.showMessageDialog(this, "Customer Added Successfully");
+
+        tb_load();
+
+    } catch (SQLException e) {
+        System.err.println(e);
+        JOptionPane.showMessageDialog(this, "Error adding customer");
+    }
     }//GEN-LAST:event_customerAddButtonActionPerformed
 
     private void customerTableMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_customerTableMouseClicked
@@ -283,16 +295,23 @@ import pos.DB;
             
             ResultSet rs = s.executeQuery(" SELECT * FROM customer WHERE cid = '"+search+"'");
             
-            if (rs.next()) {
-                
-               custermerNameText.setText(rs.getString("customer_name"));
-               custermerTPText.setText(rs.getString("Tp_Number"));
+            if (!search.isEmpty()){
+                if (rs.next()) {
+                    custermerNameText.setText(rs.getString("customer_name"));
+                    custermerTPText.setText(rs.getString("Tp_Number"));
+                    JOptionPane.showMessageDialog(null, "Custemer Was Found");
                
+                }else{
+                    JOptionPane.showMessageDialog(null, "No Avilabel Custemer In Databse");
+                    custermerSearchText.setText("");
+                    custermerNameText.setText("");
+                    custermerTPText.setText("");
+                }
             }else{
-                custermerSearchText.setText("");
-                custermerNameText.setText("");
-                custermerTPText.setText("");
+                JOptionPane.showMessageDialog(null, "Enter Custemer ID");
             }
+            
+            
             
             
         } catch (SQLException e) {
@@ -300,6 +319,26 @@ import pos.DB;
             
         }
     }//GEN-LAST:event_custermerSearchButtonActionPerformed
+
+    private void custemerUpdateButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_custemerUpdateButtonActionPerformed
+        String name = custermerNameText.getText();
+        String tp = custermerTPText.getText();
+        String id = custermerSearchText.getText();
+        
+        
+        try {
+            
+            Statement s = DB.mycon().createStatement();
+            s.executeUpdate(" UPDATE customer SET customer_name ='"+name+"' ,Tp_Number ='"+tp+"' WHERE cid = '"+id+"' ");
+             JOptionPane.showMessageDialog(null, "Data Updated");
+            
+            
+        } catch (Exception e) {
+            System.out.println(e);
+        }
+        
+         tb_load();
+    }//GEN-LAST:event_custemerUpdateButtonActionPerformed
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
