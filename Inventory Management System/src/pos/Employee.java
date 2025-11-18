@@ -1,12 +1,48 @@
 package pos;
 
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
+import java.util.Vector;
+import javax.swing.JOptionPane;
+import javax.swing.table.DefaultTableModel;
+
  class Employee extends javax.swing.JPanel {
 
     
     public Employee() {
         initComponents();
+        tb_load();
     }
+    
+    public void clearProductFields() {
+        employyeSearchText.setText("");
+        employyeNameText.setText("");
+        employyeTPText.setText("");
+    }
+    
+    public void tb_load(){
+        try {
 
+            DefaultTableModel dataTable = (DefaultTableModel) employyeTable.getModel();
+            dataTable.setRowCount(0);
+
+            Statement statement = DB.mycon().createStatement();
+            ResultSet rs = statement.executeQuery("SELECT * FROM employee");
+
+            while (rs.next()) {
+                Vector v = new Vector();
+                v.add(rs.getString(1)); 
+                v.add(rs.getString(2)); 
+                v.add(rs.getString(3)); 
+                dataTable.addRow(v);
+            }
+
+        } catch (SQLException e) {
+            System.out.println(e);
+        }
+  
+    }
     
     @SuppressWarnings("unchecked")
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
@@ -44,18 +80,38 @@ package pos;
         employyeAddButton.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
         employyeAddButton.setIcon(new javax.swing.ImageIcon(getClass().getResource("/pos/img/save.png"))); // NOI18N
         employyeAddButton.setText("Save");
+        employyeAddButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                employyeAddButtonActionPerformed(evt);
+            }
+        });
 
         employyeSearchButton.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
         employyeSearchButton.setIcon(new javax.swing.ImageIcon(getClass().getResource("/pos/img/search x30.png"))); // NOI18N
         employyeSearchButton.setText("Search");
+        employyeSearchButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                employyeSearchButtonActionPerformed(evt);
+            }
+        });
 
         employyeUpdateButton.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
         employyeUpdateButton.setIcon(new javax.swing.ImageIcon(getClass().getResource("/pos/img/update.png"))); // NOI18N
         employyeUpdateButton.setText("Update");
+        employyeUpdateButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                employyeUpdateButtonActionPerformed(evt);
+            }
+        });
 
         employyeDeleteButton.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
         employyeDeleteButton.setIcon(new javax.swing.ImageIcon(getClass().getResource("/pos/img/delete.png"))); // NOI18N
         employyeDeleteButton.setText("Delete");
+        employyeDeleteButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                employyeDeleteButtonActionPerformed(evt);
+            }
+        });
 
         javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
         jPanel2.setLayout(jPanel2Layout);
@@ -171,6 +227,11 @@ package pos;
                 "ID", "Employee  Name", "T.P Number"
             }
         ));
+        employyeTable.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                employyeTableMouseClicked(evt);
+            }
+        });
         jScrollPane1.setViewportView(employyeTable);
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
@@ -193,6 +254,110 @@ package pos;
                 .addGap(0, 12, Short.MAX_VALUE))
         );
     }// </editor-fold>//GEN-END:initComponents
+
+    private void employyeAddButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_employyeAddButtonActionPerformed
+        // TODO add your handling code here:
+        
+        String Name = employyeNameText.getText();
+        String TNumber = employyeTPText.getText();
+        
+        try {
+            if (Name.isEmpty() || TNumber.isEmpty()) {
+                JOptionPane.showMessageDialog(this, "Enter Employye Name and Telephone Number");
+                return; 
+            }
+            Statement statement = DB.mycon().createStatement();
+            statement.executeUpdate("INSERT INTO employee (Employee_Name, Tp_Number) VALUES('" + Name + "','" + TNumber + "')");
+
+            JOptionPane.showMessageDialog(this, "Employye Added Successfully");
+
+            tb_load();
+            clearProductFields();
+
+        } catch (SQLException e) {
+            System.err.println(e);
+            JOptionPane.showMessageDialog(this, "Error adding Employye");
+        }
+        
+    }//GEN-LAST:event_employyeAddButtonActionPerformed
+
+    private void employyeSearchButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_employyeSearchButtonActionPerformed
+        String search = employyeSearchText.getText();
+        try {
+            Statement s = DB.mycon().createStatement();
+            ResultSet rs = s.executeQuery(" SELECT * FROM employee WHERE eid = '"+search+"'");
+            if (!search.isEmpty()){
+                if (rs.next()) {
+                    employyeNameText.setText(rs.getString("Employee_Name"));
+                    employyeTPText.setText(rs.getString("Tp_Number"));
+                    JOptionPane.showMessageDialog(null, "Supplier Was Found");
+               
+                }else{
+                    JOptionPane.showMessageDialog(null, "No Avilabel Supplier In Databse");
+                    employyeNameText.setText("");
+                    employyeTPText.setText("");
+                }
+            }else{
+                JOptionPane.showMessageDialog(null, "Enter Supplier ID");
+            }
+        } catch (SQLException e) {
+            System.out.println(e);
+            
+        } 
+    }//GEN-LAST:event_employyeSearchButtonActionPerformed
+
+    private void employyeUpdateButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_employyeUpdateButtonActionPerformed
+        String name = employyeNameText.getText();
+        String tp = employyeTPText.getText();
+        String id = employyeSearchText.getText();
+        try {
+            if (id.isEmpty()) {
+                JOptionPane.showMessageDialog(this, "Enter Supplier Name and Telephone Number");
+                return; 
+            }else{
+                Statement s = DB.mycon().createStatement();
+                s.executeUpdate(" UPDATE employee SET Employee_Name ='"+name+"' ,Tp_Number ='"+tp+"' WHERE eid = '"+id+"' ");
+                JOptionPane.showMessageDialog(null, "Data Updated");
+            }  
+        } catch (Exception e) {
+            System.out.println(e);
+        }
+        
+         tb_load();
+         clearProductFields();
+    }//GEN-LAST:event_employyeUpdateButtonActionPerformed
+
+    private void employyeDeleteButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_employyeDeleteButtonActionPerformed
+        String id = employyeSearchText.getText();
+        try {
+            if(id.isEmpty()){
+                JOptionPane.showMessageDialog(null, "Enter Supplier ID");
+            }else{
+                Statement s = DB.mycon().createStatement();
+                s.executeUpdate("DELETE FROM employee WHERE eid = '"+id+"'");
+                JOptionPane.showMessageDialog(null, "Data Deleted");
+            }
+            
+        } catch (SQLException e) {
+            System.out.println(e);
+        }
+        
+         tb_load();
+         clearProductFields();
+    }//GEN-LAST:event_employyeDeleteButtonActionPerformed
+
+    private void employyeTableMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_employyeTableMouseClicked
+        int r = employyeTable.getSelectedRow();
+
+        String id = employyeTable.getValueAt(r, 0).toString();
+        String name = employyeTable.getValueAt(r, 1).toString();
+        String tp = employyeTable.getValueAt(r, 2).toString();
+     
+
+        employyeSearchText.setText(id);
+        employyeNameText.setText(name);
+        employyeTPText.setText(tp);
+    }//GEN-LAST:event_employyeTableMouseClicked
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables

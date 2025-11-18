@@ -1,11 +1,55 @@
 package pos;
 
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
+import java.util.Vector;
+import javax.swing.JOptionPane;
+import javax.swing.table.DefaultTableModel;
+
  class Product extends javax.swing.JPanel {
 
     
     public Product() {
         initComponents();
+        tb_load();
     }
+    
+    public void tb_load() {
+        try {
+
+            DefaultTableModel dataTable = (DefaultTableModel) productTable.getModel();
+            dataTable.setRowCount(0);
+
+            Statement statement = DB.mycon().createStatement();
+            ResultSet rs = statement.executeQuery("SELECT * FROM product");
+
+            while (rs.next()) {
+                Vector v = new Vector();
+                v.add(rs.getString(1)); // pid
+                v.add(rs.getString(2)); // Product_Name
+                v.add(rs.getString(3)); // Bar_code
+                v.add(rs.getString(4)); // Price
+                v.add(rs.getString(5)); // Qty
+                v.add(rs.getString(6)); // Sid
+                dataTable.addRow(v);
+            }
+
+        } catch (SQLException e) {
+            System.out.println(e);
+        }
+    }
+    
+    public void clearProductFields() {
+        productSearchText.setText("");
+        productNameText.setText("");
+        productBarCodeText.setText("");
+        productPriceText.setText("");
+        productQtyText.setText("");
+        productSupIDText.setText("");
+    }
+
+
 
     
     @SuppressWarnings("unchecked")
@@ -50,18 +94,38 @@ package pos;
         productAddButton.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
         productAddButton.setIcon(new javax.swing.ImageIcon(getClass().getResource("/pos/img/save.png"))); // NOI18N
         productAddButton.setText("Save");
+        productAddButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                productAddButtonActionPerformed(evt);
+            }
+        });
 
         productSearchButton.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
         productSearchButton.setIcon(new javax.swing.ImageIcon(getClass().getResource("/pos/img/search x30.png"))); // NOI18N
         productSearchButton.setText("Search");
+        productSearchButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                productSearchButtonActionPerformed(evt);
+            }
+        });
 
         productUpdateButton.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
         productUpdateButton.setIcon(new javax.swing.ImageIcon(getClass().getResource("/pos/img/update.png"))); // NOI18N
         productUpdateButton.setText("Update");
+        productUpdateButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                productUpdateButtonActionPerformed(evt);
+            }
+        });
 
         productDeleteButton.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
         productDeleteButton.setIcon(new javax.swing.ImageIcon(getClass().getResource("/pos/img/delete.png"))); // NOI18N
         productDeleteButton.setText("Delete");
+        productDeleteButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                productDeleteButtonActionPerformed(evt);
+            }
+        });
 
         productBarCodeText.setFont(new java.awt.Font("Segoe UI", 1, 18)); // NOI18N
         productBarCodeText.addActionListener(new java.awt.event.ActionListener() {
@@ -225,6 +289,11 @@ package pos;
                 "ID", "Product Name", "Bar Code", "Price", "Qty", "Supplier ID"
             }
         ));
+        productTable.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                productTableMouseClicked(evt);
+            }
+        });
         jScrollPane1.setViewportView(productTable);
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
@@ -251,6 +320,159 @@ package pos;
     private void productBarCodeTextActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_productBarCodeTextActionPerformed
         // TODO add your handling code here:
     }//GEN-LAST:event_productBarCodeTextActionPerformed
+
+    private void productAddButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_productAddButtonActionPerformed
+
+        String pName = productNameText.getText();
+        String barCode = productBarCodeText.getText();
+        String price = productPriceText.getText();
+        String qty = productQtyText.getText();
+        String sIDText = productSupIDText.getText();   // FIX (sID was int, cannot call isEmpty)
+
+        // validate empty fields
+        try {
+            if (pName.isEmpty() || barCode.isEmpty() || price.isEmpty() || qty.isEmpty() || sIDText.isEmpty()) {
+                JOptionPane.showMessageDialog(this, "Please fill all fields.");
+                return;
+            }
+
+            int sID = Integer.parseInt(sIDText);   // FIX (convert supplier ID to integer)
+
+            Statement statement = DB.mycon().createStatement();
+
+            // FIX SQL + variable names
+            statement.executeUpdate(
+                "INSERT INTO product (Product_Name, Bar_code, Price, Qty, Sid) VALUES ('"
+                + pName + "','" + barCode + "','" + price + "','" + qty + "'," + sID + ")"
+            );
+
+            JOptionPane.showMessageDialog(this, "Product Added Successfully");
+
+        } catch (SQLException e) {
+            System.err.println(e);
+            JOptionPane.showMessageDialog(this, "Error adding Product");
+        } catch (NumberFormatException e) {
+            JOptionPane.showMessageDialog(this, "Supplier ID must be a number");
+        }
+        tb_load();
+        clearProductFields();
+
+    }//GEN-LAST:event_productAddButtonActionPerformed
+
+    private void productTableMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_productTableMouseClicked
+        // TODO add your handling code here:
+        int r = productTable.getSelectedRow();
+
+        String pid = productTable.getValueAt(r, 0).toString();
+        String pName = productTable.getValueAt(r, 1).toString();
+        String barCode = productTable.getValueAt(r, 2).toString();
+        String price = productTable.getValueAt(r, 3).toString();
+        String qty = productTable.getValueAt(r, 4).toString();
+        String sid = productTable.getValueAt(r, 5).toString();
+
+        productSearchText.setText(pid);
+        productNameText.setText(pName);
+        productBarCodeText.setText(barCode);
+        productPriceText.setText(price);
+        productQtyText.setText(qty);
+        productSupIDText.setText(sid);
+        
+    }//GEN-LAST:event_productTableMouseClicked
+
+    private void productSearchButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_productSearchButtonActionPerformed
+        // TODO add your handling code here:
+        String search = productSearchText.getText();
+        try {
+            Statement s = DB.mycon().createStatement();
+            ResultSet rs = s.executeQuery("SELECT * FROM product WHERE pid = '" + search + "'");
+
+            if (!search.isEmpty()) {
+                if (rs.next()) {
+
+                    productNameText.setText(rs.getString("Product_Name"));
+                    productBarCodeText.setText(rs.getString("Bar_code"));
+                    productPriceText.setText(rs.getString("Price"));
+                    productQtyText.setText(rs.getString("Qty"));
+                    productSupIDText.setText(rs.getString("Sid"));
+
+                    JOptionPane.showMessageDialog(null, "Product Found");
+
+                } else {
+                    JOptionPane.showMessageDialog(null, "No Product Found in Database");
+
+                    productNameText.setText("");
+                    productBarCodeText.setText("");
+                    productPriceText.setText("");
+                    productQtyText.setText("");
+                    productSupIDText.setText("");
+                }
+            } else {
+                JOptionPane.showMessageDialog(null, "Enter Product ID");
+            }
+
+        } catch (SQLException e) {
+            System.out.println(e);
+        }
+
+    }//GEN-LAST:event_productSearchButtonActionPerformed
+
+    private void productUpdateButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_productUpdateButtonActionPerformed
+        // TODO add your handling code here:
+        String pName = productNameText.getText();
+        String barCode = productBarCodeText.getText();
+        String price = productPriceText.getText();
+        String qty = productQtyText.getText();
+        String sid = productSupIDText.getText();
+        String pid = productSearchText.getText();
+
+        try {
+            if (pid.isEmpty()) {
+                JOptionPane.showMessageDialog(this, "Enter Product ID to update");
+                return;
+            } else {
+                Statement s = DB.mycon().createStatement();
+                s.executeUpdate(
+                    "UPDATE product SET "
+                    + "Product_Name = '" + pName + "', "
+                    + "Bar_code = '" + barCode + "', "
+                    + "Price = '" + price + "', "
+                    + "Qty = '" + qty + "', "
+                    + "Sid = '" + sid + "' "
+                    + "WHERE pid = '" + pid + "'"
+                );
+
+                JOptionPane.showMessageDialog(null, "Product Updated Successfully!");
+            }
+
+        } catch (Exception e) {
+            System.out.println(e);
+        }
+
+        tb_load();
+        clearProductFields();
+
+    }//GEN-LAST:event_productUpdateButtonActionPerformed
+
+    private void productDeleteButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_productDeleteButtonActionPerformed
+        // TODO add your handling code here:
+        String id = productSearchText.getText();
+        try {
+            if (id.isEmpty()) {
+                JOptionPane.showMessageDialog(null, "Enter Product ID");
+            } else {
+                Statement s = DB.mycon().createStatement();
+                s.executeUpdate("DELETE FROM product WHERE pid = '" + id + "'");
+                JOptionPane.showMessageDialog(null, "Product Deleted");
+            }
+
+        } catch (SQLException e) {
+            System.out.println(e);
+        }
+
+        tb_load();
+        clearProductFields();
+
+    }//GEN-LAST:event_productDeleteButtonActionPerformed
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables

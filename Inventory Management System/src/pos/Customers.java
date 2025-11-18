@@ -17,6 +17,11 @@ import pos.DB;
         tb_load();
         
     }
+    public void clearProductFields() {
+        custermerSearchText.setText("");
+        custermerNameText.setText("");
+        custermerTPText.setText("");
+    }
     
     public void tb_load(){
         try {
@@ -272,6 +277,7 @@ import pos.DB;
             JOptionPane.showMessageDialog(this, "Customer Added Successfully");
 
             tb_load();
+            clearProductFields();
 
         } catch (SQLException e) {
             System.err.println(e);
@@ -336,6 +342,7 @@ import pos.DB;
         }
         
          tb_load();
+         clearProductFields();
     }//GEN-LAST:event_custemerUpdateButtonActionPerformed
 
     private void custemerDeleteButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_custemerDeleteButtonActionPerformed
@@ -354,6 +361,7 @@ import pos.DB;
         }
         
          tb_load();
+         clearProductFields();
     }//GEN-LAST:event_custemerDeleteButtonActionPerformed
 
 

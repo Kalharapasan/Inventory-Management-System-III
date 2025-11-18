@@ -15,6 +15,12 @@ import javax.swing.table.DefaultTableModel;
         tb_load();
     }
     
+    public void clearProductFields() {
+        supplierSearchText.setText("");
+        supplierNameText.setText("");
+        supplierTPText.setText("");
+    }
+    
     public void tb_load(){
         try {
 
@@ -265,6 +271,7 @@ import javax.swing.table.DefaultTableModel;
             JOptionPane.showMessageDialog(this, "Supplier Added Successfully");
 
             tb_load();
+            clearProductFields();
 
         } catch (SQLException e) {
             System.err.println(e);
@@ -328,6 +335,7 @@ import javax.swing.table.DefaultTableModel;
         }
         
          tb_load();
+         clearProductFields();
     }//GEN-LAST:event_supplierUpdateButtonActionPerformed
 
     private void supplierDeleteButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_supplierDeleteButtonActionPerformed
@@ -346,6 +354,7 @@ import javax.swing.table.DefaultTableModel;
         }
         
          tb_load();
+         clearProductFields();
     }//GEN-LAST:event_supplierDeleteButtonActionPerformed
 
 
