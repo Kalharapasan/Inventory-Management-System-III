@@ -25,7 +25,6 @@ public class Home extends javax.swing.JFrame {
         jToggleButton4 = new javax.swing.JToggleButton();
         jToggleButton5 = new javax.swing.JToggleButton();
         jToggleButton6 = new javax.swing.JToggleButton();
-        jToggleButton7 = new javax.swing.JToggleButton();
         jToggleButton8 = new javax.swing.JToggleButton();
         panel_loder = new javax.swing.JPanel();
         jPanel2 = new javax.swing.JPanel();
@@ -50,6 +49,7 @@ public class Home extends javax.swing.JFrame {
 
         home_btn_grop.add(jToggleButton1);
         jToggleButton1.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
+        jToggleButton1.setIcon(new javax.swing.ImageIcon(getClass().getResource("/pos/img/customer.png"))); // NOI18N
         jToggleButton1.setText("Customers");
         jToggleButton1.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -59,6 +59,7 @@ public class Home extends javax.swing.JFrame {
 
         home_btn_grop.add(jToggleButton2);
         jToggleButton2.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
+        jToggleButton2.setIcon(new javax.swing.ImageIcon(getClass().getResource("/pos/img/emp.png"))); // NOI18N
         jToggleButton2.setText("Employee");
         jToggleButton2.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -68,6 +69,7 @@ public class Home extends javax.swing.JFrame {
 
         home_btn_grop.add(jToggleButton3);
         jToggleButton3.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
+        jToggleButton3.setIcon(new javax.swing.ImageIcon(getClass().getResource("/pos/img/supplier.png"))); // NOI18N
         jToggleButton3.setText("Supplier");
         jToggleButton3.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -77,14 +79,22 @@ public class Home extends javax.swing.JFrame {
 
         home_btn_grop.add(jToggleButton4);
         jToggleButton4.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
+        jToggleButton4.setIcon(new javax.swing.ImageIcon(getClass().getResource("/pos/img/invo.png"))); // NOI18N
         jToggleButton4.setText("Invoice");
 
         home_btn_grop.add(jToggleButton5);
         jToggleButton5.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
+        jToggleButton5.setIcon(new javax.swing.ImageIcon(getClass().getResource("/pos/img/sales_menu.png"))); // NOI18N
         jToggleButton5.setText("Sales");
+        jToggleButton5.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jToggleButton5ActionPerformed(evt);
+            }
+        });
 
         home_btn_grop.add(jToggleButton6);
         jToggleButton6.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
+        jToggleButton6.setIcon(new javax.swing.ImageIcon(getClass().getResource("/pos/img/product.png"))); // NOI18N
         jToggleButton6.setText("Product");
         jToggleButton6.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -92,12 +102,9 @@ public class Home extends javax.swing.JFrame {
             }
         });
 
-        home_btn_grop.add(jToggleButton7);
-        jToggleButton7.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
-        jToggleButton7.setText("Customers");
-
         home_btn_grop.add(jToggleButton8);
         jToggleButton8.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
+        jToggleButton8.setIcon(new javax.swing.ImageIcon(getClass().getResource("/pos/img/reports.png"))); // NOI18N
         jToggleButton8.setText("Reports");
 
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
@@ -113,7 +120,6 @@ public class Home extends javax.swing.JFrame {
                     .addComponent(jToggleButton4, javax.swing.GroupLayout.PREFERRED_SIZE, 141, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jToggleButton5, javax.swing.GroupLayout.PREFERRED_SIZE, 141, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jToggleButton6, javax.swing.GroupLayout.PREFERRED_SIZE, 141, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jToggleButton7, javax.swing.GroupLayout.PREFERRED_SIZE, 141, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jToggleButton8, javax.swing.GroupLayout.PREFERRED_SIZE, 141, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addContainerGap(61, Short.MAX_VALUE))
         );
@@ -134,9 +140,7 @@ public class Home extends javax.swing.JFrame {
                 .addComponent(jToggleButton4, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jToggleButton8, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jToggleButton7, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(65, Short.MAX_VALUE))
+                .addContainerGap(111, Short.MAX_VALUE))
         );
 
         panel_loder.setBorder(javax.swing.BorderFactory.createEtchedBorder());
@@ -218,6 +222,12 @@ public class Home extends javax.swing.JFrame {
         jpLoder.jPanelLoader(panel_loder, product);    
     }//GEN-LAST:event_jToggleButton6ActionPerformed
 
+    private void jToggleButton5ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jToggleButton5ActionPerformed
+        // TODO add your handling code here:
+        Sale sale =new Sale();
+        jpLoder.jPanelLoader(panel_loder, sale);
+    }//GEN-LAST:event_jToggleButton5ActionPerformed
+
    
     public static void main(String args[]) {
         java.awt.EventQueue.invokeLater(new Runnable() {
@@ -238,7 +248,6 @@ public class Home extends javax.swing.JFrame {
     private javax.swing.JToggleButton jToggleButton4;
     private javax.swing.JToggleButton jToggleButton5;
     private javax.swing.JToggleButton jToggleButton6;
-    private javax.swing.JToggleButton jToggleButton7;
     private javax.swing.JToggleButton jToggleButton8;
     private javax.swing.JPanel panel_loder;
     // End of variables declaration//GEN-END:variables
