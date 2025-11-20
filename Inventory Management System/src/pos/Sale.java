@@ -269,16 +269,15 @@ public class Sale extends javax.swing.JPanel {
             .addGroup(jPanel2Layout.createSequentialGroup()
                 .addContainerGap()
                 .addComponent(jLabel1)
-                .addGap(20, 20, 20)
+                .addGap(18, 18, 18)
                 .addComponent(saleInvoIDLabel)
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         jPanel2Layout.setVerticalGroup(
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel2Layout.createSequentialGroup()
-                .addContainerGap()
-                .addComponent(saleInvoIDLabel, javax.swing.GroupLayout.DEFAULT_SIZE, 34, Short.MAX_VALUE))
-            .addComponent(jLabel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+            .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                .addComponent(jLabel1, javax.swing.GroupLayout.DEFAULT_SIZE, 40, Short.MAX_VALUE)
+                .addComponent(saleInvoIDLabel))
         );
 
         jPanel3.setBorder(javax.swing.BorderFactory.createEtchedBorder());
@@ -294,12 +293,22 @@ public class Sale extends javax.swing.JPanel {
 
         saleProductComboBox.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
         saleProductComboBox.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Selete" }));
+        saleProductComboBox.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                saleProductComboBoxActionPerformed(evt);
+            }
+        });
 
         jLabel4.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
         jLabel4.setText("Qty:");
 
         saleQtyText.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
         saleQtyText.setText("00");
+        saleQtyText.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyReleased(java.awt.event.KeyEvent evt) {
+                saleQtyTextKeyReleased(evt);
+            }
+        });
 
         jLabel5.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
         jLabel5.setText("Unit Price:");
@@ -427,9 +436,19 @@ public class Sale extends javax.swing.JPanel {
 
         saleRemoveButton.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
         saleRemoveButton.setText("Remove");
+        saleRemoveButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                saleRemoveButtonActionPerformed(evt);
+            }
+        });
 
         saleRemoveAllButton.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
         saleRemoveAllButton.setText("Remove All");
+        saleRemoveAllButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                saleRemoveAllButtonActionPerformed(evt);
+            }
+        });
 
         javax.swing.GroupLayout jPanel5Layout = new javax.swing.GroupLayout(jPanel5);
         jPanel5.setLayout(jPanel5Layout);
@@ -505,6 +524,11 @@ public class Sale extends javax.swing.JPanel {
 
         salePaidAmountText.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
         salePaidAmountText.setText("00.00");
+        salePaidAmountText.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyReleased(java.awt.event.KeyEvent evt) {
+                salePaidAmountTextKeyReleased(evt);
+            }
+        });
 
         saleTotalQtyLable.setFont(new java.awt.Font("Tahoma", 1, 12)); // NOI18N
         saleTotalQtyLable.setText("00");
@@ -550,6 +574,11 @@ public class Sale extends javax.swing.JPanel {
 
         salePrintButton.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
         salePrintButton.setText("Play/Print");
+        salePrintButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                salePrintButtonActionPerformed(evt);
+            }
+        });
 
         javax.swing.GroupLayout jPanel8Layout = new javax.swing.GroupLayout(jPanel8);
         jPanel8.setLayout(jPanel8Layout);
@@ -650,6 +679,142 @@ public class Sale extends javax.swing.JPanel {
     }
     
     }//GEN-LAST:event_saleAddCartButtonActionPerformed
+
+    private void saleRemoveButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_saleRemoveButtonActionPerformed
+        // TODO add your handling code here:
+        try {
+            
+            DefaultTableModel dt = (DefaultTableModel) saleTable.getModel();
+            int rw = saleTable.getSelectedRow();
+           
+            dt.removeRow(rw);
+            
+            
+        } catch (Exception e) {
+        }
+        
+        cart_total(); 
+         tot(); 
+    }//GEN-LAST:event_saleRemoveButtonActionPerformed
+
+    private void saleRemoveAllButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_saleRemoveAllButtonActionPerformed
+        // TODO add your handling code here:
+         DefaultTableModel dt = (DefaultTableModel) saleTable.getModel();
+        dt.setRowCount(0);
+        
+         cart_total();
+         tot();
+    }//GEN-LAST:event_saleRemoveAllButtonActionPerformed
+
+    private void salePrintButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_salePrintButtonActionPerformed
+        try {
+          DefaultTableModel dt = (DefaultTableModel) saleTable.getModel();
+          int rc = dt.getRowCount();
+          
+            for (int i = 0; i < rc; i++) {
+                
+                String inid = dt.getValueAt(i, 0).toString();
+                String P_name = dt.getValueAt(i, 1).toString(); 
+                String bar_code = dt.getValueAt(i, 2).toString(); 
+                String qty = dt.getValueAt(i, 3).toString(); 
+                String un_price = dt.getValueAt(i, 4).toString(); 
+                String tot_price = dt.getValueAt(i, 5).toString(); 
+             Statement s = DB.mycon().createStatement();
+             s.executeUpdate(" INSERT INTO cart (INID, Product_Name, Bar_code, qty, Unit_Price, Total_Price) VALUES ('"+inid+"','"+P_name+"','"+bar_code+"','"+qty+"','"+un_price+"','"+tot_price+"') ");
+           
+            }
+            
+                JOptionPane.showMessageDialog(null, "Data Seved");
+            
+        } catch (HeadlessException | SQLException e) {
+            System.out.println(e);
+        }
+  
+        try {
+            String inv_id = saleInvoIDLabel.getText();
+            String cname  = saleCustumerComboBox.getSelectedItem().toString();
+            String totqty = saleTotalQtyLable.getText();
+            String tot_bil = saleTotalAmountLabel.getText();           
+            String blnc = saleBalanceLable.getText();
+            
+             // paid check
+             
+             Double tot = Double.valueOf(saleTotalAmountLabel.getText());
+             Double pid = Double.valueOf(salePaidAmountText.getText());
+             String Status = null;
+             if (pid.equals(0.0)) {
+                 
+                Status = "UnPaid";
+                
+            }else if (tot>pid) {
+                 Status = "Partial";
+                 
+            }else if (tot<=pid) {
+                Status = "Paid";
+            }
+             Statement ss = DB.mycon().createStatement();
+             ss.executeUpdate("INSERT INTO sales(INID, Cid, Customer_Name, Total_Qty, Total_Bill, Status, Balance) VALUES('"+inv_id+"','"+cus_id+"','"+cname+"','"+totqty+"','"+tot_bil+"','"+Status+"','"+blnc+"')");
+
+        } catch (NumberFormatException | SQLException e) {
+            System.out.println(e);
+        }
+        try {
+            
+           String id = saleInvoIDLabel.getText(); 
+            Statement s = DB.mycon().createStatement();
+            s.executeUpdate("UPDATE  extra SET val='"+id+"' WHERE exid = 1");
+            
+            
+        } catch (SQLException e) {
+            System.out.println(e);
+        }
+
+        try {
+        HashMap para = new HashMap();
+        
+        para.put("inv_id", saleInvoIDLabel.getText());  // inv_id  is ireport parameter name
+        
+        //ReportView r =new ReportView("src\\reports\\print.jasper", para);
+        //r.setVisible(true);  
+           
+        } catch (Exception e) {
+        }
+        stckup();
+    }//GEN-LAST:event_salePrintButtonActionPerformed
+
+    private void salePaidAmountTextKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_salePaidAmountTextKeyReleased
+        // TODO add your handling code here:
+        tot(); 
+    }//GEN-LAST:event_salePaidAmountTextKeyReleased
+
+    private void saleQtyTextKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_saleQtyTextKeyReleased
+        // TODO add your handling code here:
+        pro_tot_cal();
+    }//GEN-LAST:event_saleQtyTextKeyReleased
+
+    private void saleProductComboBoxActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_saleProductComboBoxActionPerformed
+        // TODO add your handling code here:
+        String  name =saleProductComboBox.getSelectedItem().toString();
+        try {
+            
+            Statement s = DB.mycon().createStatement();
+            ResultSet rs = s.executeQuery("SELECT Bar_code,Price,Qty FROM product  WHERE Product_Name ='"+name+"'  ");
+            if (rs.next()) {
+                 
+               
+                saleUnitPriceLabel.setText(rs.getString("Price"));
+                saleBarCodeLable.setText(rs.getString("Bar_code"));
+                saleStockQtyLabel.setText(rs.getString("Qty"));
+                
+                
+            }
+             pro_tot_cal();
+            
+            
+        } catch (SQLException e) {
+            System.out.println(e);
+        }
+    }//GEN-LAST:event_saleProductComboBoxActionPerformed
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
