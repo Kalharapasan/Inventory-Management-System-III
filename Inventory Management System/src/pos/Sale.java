@@ -287,6 +287,11 @@ public class Sale extends javax.swing.JPanel {
 
         saleCustumerComboBox.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
         saleCustumerComboBox.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Selete" }));
+        saleCustumerComboBox.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                saleCustumerComboBoxActionPerformed(evt);
+            }
+        });
 
         jLabel3.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
         jLabel3.setText("Product");
@@ -815,6 +820,29 @@ public class Sale extends javax.swing.JPanel {
             System.out.println(e);
         }
     }//GEN-LAST:event_saleProductComboBoxActionPerformed
+
+    private void saleCustumerComboBoxActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_saleCustumerComboBoxActionPerformed
+        // TODO add your handling code here:
+        String  name =saleCustumerComboBox.getSelectedItem().toString();
+        try {
+            
+            Statement s = DB.mycon().createStatement();
+            ResultSet rs = s.executeQuery("SELECT cid,customer_name FROM customer  WHERE customer_name ='"+name+"'  ");
+            if (rs.next()) {
+                 
+               
+               cus_id = (rs.getString("cid"));
+               
+                
+                
+            }
+          
+            
+            
+        } catch (SQLException e) {
+            System.out.println(e);
+        }
+    }//GEN-LAST:event_saleCustumerComboBoxActionPerformed
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
